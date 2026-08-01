@@ -291,6 +291,12 @@ body.__cebraspe-applied [class*="vp-pop-up"] {
   font-size: 11px; letter-spacing: 1px; color: #93a1bb;
 }
 </style><style id="__mobile_compact_v1">
+
+/* === Cebraspe Logo Oficial (desktop e mobile) — substitui SVG placeholder === */
+#cebraspe-topbar .ceb-logo .ceb-logo-img { height: 46px; width: auto; display: block; }
+#cebraspe-topbar .ceb-logo svg { display: none !important; }
+#cebraspe-topbar .ceb-logo span { display: none !important; }
+
 /* Mobile compact overrides - aplicado em Android/iOS */
 @media (max-width: 768px) {
   /* Remove botao "Pagina de Acompanhamento" no header */
@@ -368,11 +374,13 @@ body.__cebraspe-applied [class*="vp-pop-up"] {
   h4, h5 { font-size: 13px !important; }
   p, li, td, th { font-size: 13px !important; }
 
-  /* Topbar Cebraspe mais destacado no mobile — logo maior para dar identidade */
+  /* Topbar Cebraspe — usa a logo oficial (imagem WebP) igual à página inicial */
   body #cebraspe-topbar { padding-bottom: 12px !important; padding-top: 8px !important; }
-  body #cebraspe-topbar .ceb-container { padding: 14px 16px !important; gap: 12px !important; }
-  body #cebraspe-topbar .ceb-logo { font-size: 24px !important; font-weight: 700 !important; gap: 12px !important; }
-  body #cebraspe-topbar .ceb-logo svg { width: 40px !important; height: 36px !important; }
+  body #cebraspe-topbar .ceb-container { padding: 14px 16px !important; }
+  body #cebraspe-topbar .ceb-logo { font-size: 0 !important; }
+  body #cebraspe-topbar .ceb-logo .ceb-logo-img { height: 40px !important; width: auto !important; }
+  body #cebraspe-topbar .ceb-logo svg { display: none !important; }
+  body #cebraspe-topbar .ceb-logo span { display: none !important; }
 
   /* === Botões CONTINUAR / VOLTAR: reduzir tamanho no mobile === */
   /* Sobrescreve o __fgv_touch_targets com maior especificidade */
@@ -403,12 +411,7 @@ body.__cebraspe-applied [class*="vp-pop-up"] {
 <body class="concurso128 __cebraspe-applied"><div data-cebraspe-marker="__cebraspe_layout_v1" id="__cebraspe_topbar_root"><header id="cebraspe-topbar">
 <div class="ceb-container">
 <a class="ceb-logo" href="/inicio.html">
-<svg aria-hidden="true" viewbox="0 0 60 54" xmlns="http://www.w3.org/2000/svg">
-<path d="M5 42 L26 8 L42 20 L18 48 Z" fill="#f39c1f"></path>
-<path d="M26 8 L42 20 L50 12 L38 4 Z" fill="#1c3053"></path>
-<rect fill="#1c3053" height="4" transform="rotate(-30 14 48)" width="12" x="8" y="46"></rect>
-</svg>
-<span>Cebraspe</span>
+<img src="/cebraspe-logo.webp" alt="Cebraspe" class="ceb-logo-img" style="height:44px;width:auto;display:block;">
 </a>
 <a class="ceb-acomp" href="javascript:void(0)" onclick="return false;">
       Página de Acompanhamento
