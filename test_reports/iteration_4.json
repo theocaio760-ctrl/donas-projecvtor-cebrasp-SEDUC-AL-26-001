@@ -1,0 +1,47 @@
+{
+  "summary": "Frontend-only test of mobile vertical spacing between header and page titles across 7 pages. inicio.html passes (h2 top=148px). Desktop regression clean (padTop 87px, no h2 margin change). However 5 inner pages (inscricao, dados-inscricao, confirmacao, pagamento-pix, inscricao-realizada) still show titles glued to header (top=75px, marginTop=0) because the __mobile_compact_v1 rule for h2.tituloPagina is OVERRIDDEN by a later stylesheet rule with !important. termos.html h1 top=114px (below 130 target but visually reasonable).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "h2.tituloPagina (inscricao/dados-inscricao/confirmacao/pagamento-pix/inscricao-realizada)", "issue": "Mobile margin-top: 40px !important from __mobile_compact_v1 is overridden by a later CSS rule 'h2.tituloPagina { margin: 0px 0px 20px !important; padding: 0px 0px 12px !important; }'. Result: title top = 75px, marginTop = 0px. Titles still visually glued to the header on mobile.", "selector": "h2.tituloPagina", "priority": "HIGH"},
+      {"component": "termos.html h1", "issue": "h1 top=114px on mobile (below 130px target). Slightly close to header but has some breathing.", "selector": "h1", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "inscricao/dados-inscricao/confirmacao/pagamento-pix/inscricao-realizada (mobile 390x844)", "issues": ["Title h2.tituloPagina sits at y=75px, effectively glued to the Cebraspe header — the reported bug is NOT fixed on these 5 pages."]}
+    ]
+  },
+  "measurements_mobile_390x844": {
+    "inicio.html": {"selector": ".wpb_text_column h2", "top_px": 148, "marginTop_px": 40, "grid_section_padTop": "100px", "status": "PASS"},
+    "termos.html": {"selector": "h1", "top_px": 114, "status": "BORDERLINE"},
+    "inscricao.html": {"selector": "h2.tituloPagina", "top_px": 75, "marginTop_px": 0, "status": "FAIL"},
+    "dados-inscricao.html": {"selector": "h2.tituloPagina", "top_px": 75, "marginTop_px": 0, "status": "FAIL"},
+    "confirmacao.html": {"selector": "h2.tituloPagina", "top_px": 75, "marginTop_px": 0, "status": "FAIL"},
+    "pagamento-pix.html": {"selector": "h2.tituloPagina", "top_px": 75, "marginTop_px": 0, "status": "FAIL"},
+    "inscricao-realizada.html": {"selector": "h2.tituloPagina", "top_px": 75, "marginTop_px": 0, "status": "FAIL"}
+  },
+  "measurements_desktop_1440x900": {
+    "inicio.html": {"grid_section_padTop": "87px", "h2_marginTop": "0px", "h2_top_px": 252, "status": "PASS (no regression)"}
+  },
+  "css_verification": {
+    "all_7_pages_contain__mobile_compact_v1_block": true,
+    "required_rules_present": {"vc_row.grid_section padding-top: 100px": true, "wpb_text_column h2 margin-top: 40px": true, "title_outer min-height: 60px": true}
+  },
+  "root_cause": "In inscricao/dados-inscricao/confirmacao/pagamento-pix/inscricao-realizada pages, another stylesheet declares 'h2.tituloPagina { margin: 0px 0px 20px !important; padding: 0px 0px 12px !important; }' AFTER the __mobile_compact_v1 block in the CSS cascade. Both use !important, so the LATER rule wins → margin-top:40px is nullified to 0. Additionally, these pages do not have a .vc_row.grid_section wrapper (they use .Miolo container), so the padding-top:100px rule doesn't help them either.",
+  "action_items": [
+    "Increase specificity of h2.tituloPagina mobile rule OR move __mobile_compact_v1 block to load AFTER all site stylesheets. Suggested fix: change selector to 'body h2.tituloPagina' or 'html body h2.tituloPagina' inside the @media block, and/or move the <style id=\"__mobile_compact_v1\"> tag to the very end of <body>.",
+    "Also add mobile padding-top on the container of inscricao pages, e.g. '@media(max-width:768px){ body.concurso128 .Miolo { padding-top: 40px !important; } }' — since these pages use .Miolo, not .vc_row.grid_section.",
+    "For termos.html: verify h1 top >=130 (currently 114). May want to slightly increase mobile padding on its container as well."
+  ],
+  "critical_code_review_comments": [
+    "The __mobile_compact_v1 style block is duplicated in 7 HTML files (~4.3KB each). Consider extracting to an external CSS file loaded last to (a) avoid duplication and (b) guarantee it wins the cascade order.",
+    "Relying on !important stacking is fragile; specificity-based selectors (body h2.tituloPagina) are more robust."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (not tested)", "frontend": "29% (2/7 pages pass mobile spacing; inicio ok, termos borderline, 5 fail)"},
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Re-run the same 7-page mobile measurement (viewport 390x844) after main agent adjusts CSS specificity/ordering. Success criteria: getBoundingClientRect().top of the main title element on each page should be >= 100px (target 130+). Do NOT break desktop 1440x900: .vc_row.grid_section padTop must remain ~87px and h2 marginTop must remain 0px there.",
+  "rca of the issue": "The @media (max-width:768px) rule 'h2.tituloPagina { margin-top: 40px !important; ... }' declared inside <style id=\"__mobile_compact_v1\"> is present in all 5 affected pages, but it is overridden because another stylesheet later in the cascade declares 'h2.tituloPagina { margin: 0 0 20px !important; padding: 0 0 12px !important; }' with equal !important weight and later position. CSS cascade rules: same specificity + same importance → last one wins. Fix by (a) moving the __mobile_compact_v1 style block to be the last style in the document, or (b) bumping specificity (e.g. body h2.tituloPagina). Reproduce: open https://concurso-inscricao.preview.emergentagent.com/inscricao.html at 390x844 → h2.tituloPagina.getBoundingClientRect().top === 75."
+}

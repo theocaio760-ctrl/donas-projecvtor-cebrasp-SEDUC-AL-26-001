@@ -256,23 +256,37 @@ body.__cebraspe-applied [class*="vp-pop-up"] {
   a[href*="acompanhamento/default1"],
   .btn-areacandidato { display: none !important; }
 
-  /* Cabeçalhos e logos menores */
+  /* === Espaçamento entre cabeçalho e título === */
+  /* Container "title_outer" (spacer entre header e conteudo) - preserva altura para não cortar logo */
+  .title_outer, .title_outer.animate_title_area { opacity: 1 !important; min-height: 60px !important; }
+
+  /* Bridge/WPBakery: linha principal do inicio.html com o título — mais respiro */
+  .vc_row.grid_section,
+  .vc_row.wpb_row.grid_section { padding-top: 100px !important; padding-bottom: 40px !important; }
+
+  /* H2 e H1 principais dentro de wpb_text_column */
+  .wpb_text_column h1,
+  .wpb_text_column h2 { margin-top: 40px !important; padding-top: 12px !important; }
+
+  /* === Cabeçalhos e logos menores === */
   #Topo, #Topo * { max-height: 90px !important; }
   #Logo, #Logo h1, #Logo h1 img { max-width: 140px !important; max-height: 60px !important; }
   #Rodape, #Rodape * { font-size: 11px !important; }
 
-  /* Titulo da pagina */
-  h2.tituloPagina { line-height: 50px !important; font-size: 22px !important; letter-spacing: 0 !important; }
+  /* Titulo tradicional das paginas /Miolo */
+  h2.tituloPagina { line-height: 50px !important; font-size: 22px !important; letter-spacing: 0 !important; margin-top: 40px !important; }
   h2.tituloPagina span { text-indent: 10px !important; padding: 4px 0 !important; }
 
-  /* Miolo/container menor e sem sombra pesada */
-  .Miolo { width: 100% !important; left: auto !important; margin: 0 auto 16px !important; padding-bottom: 20px !important; min-height: auto !important; border-radius: 0 !important; box-shadow: none !important; }
-  .Conteudo, .container_inner { width: 100% !important; padding: 0 12px !important; box-sizing: border-box !important; }
-
-  /* Ícones grandes / cards menores */
-  #TopoInformacoes .imagem { width: 60px !important; height: 60px !important; }
-  #TopoInformacoes .dados h2 { font-size: 18px !important; }
+  /* Espaço extra entre topo/logo e o primeiro bloco (título/subtítulo) */
+  #TopoInformacoes { margin-top: 40px !important; padding-top: 16px !important; }
+  #TopoInformacoes .imagem { margin-top: 8px !important; width: 60px !important; height: 60px !important; }
+  #TopoInformacoes .dados h1,
+  #TopoInformacoes .dados h2 { margin-top: 12px !important; font-size: 18px !important; }
   #TopoInformacoes .dados p { font-size: 13px !important; }
+
+  /* Miolo/container menor e sem sombra pesada */
+  .Miolo { width: 100% !important; left: auto !important; margin: 24px auto 16px !important; padding-top: 12px !important; padding-bottom: 20px !important; min-height: auto !important; border-radius: 0 !important; box-shadow: none !important; }
+  .Conteudo, .container_inner { width: 100% !important; padding: 0 12px !important; box-sizing: border-box !important; }
 
   /* Botoes mais compactos */
   .botao, button.botao, a.botao { padding: 6px 12px !important; font-size: 12px !important; }
@@ -283,6 +297,10 @@ body.__cebraspe-applied [class*="vp-pop-up"] {
   .blocoPadrao h3 span { padding: 4px 12px !important; font-size: 13px !important; }
   .blocoPadrao p { font-size: 13px !important; line-height: 1.35 !important; }
   .blocoPadrao .dados { padding: 8px 14px 16px !important; }
+
+  /* Cards das VAGAS/REMUNERAÇÃO/PERÍODO no inicio (Bridge) */
+  .page-concursos__list { margin-top: 24px !important; }
+  .page-concursos__list li { margin-bottom: 24px !important; }
 
   /* Tabelas responsivas */
   #blocoListaVagas table { width: 100% !important; float: none !important; }
@@ -296,7 +314,7 @@ body.__cebraspe-applied [class*="vp-pop-up"] {
   }
 
   /* Espaçamento vertical entre seções reduzido */
-  body { font-size: 14px !important; }
+  body { font-size: 14px !important; padding-top: 8px !important; }
   h1 { font-size: 22px !important; }
   h2 { font-size: 18px !important; }
   h3 { font-size: 15px !important; }
@@ -304,6 +322,7 @@ body.__cebraspe-applied [class*="vp-pop-up"] {
   p, li, td, th { font-size: 13px !important; }
 
   /* Menu mobile / topbar Cebraspe compacto */
+  #cebraspe-topbar { padding-bottom: 8px !important; }
   #cebraspe-topbar .ceb-container { padding: 8px 10px !important; }
   #cebraspe-topbar .ceb-logo { font-size: 16px !important; }
   #cebraspe-topbar .ceb-logo svg { width: 22px !important; height: 20px !important; }
