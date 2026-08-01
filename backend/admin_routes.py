@@ -1374,7 +1374,7 @@ def _status_emoji(status: str) -> str:
     return {
         'Aguardando pagamento': '🟡',
         'PIX gerado': '🔵',
-        'PIX copiado': '🟠',
+        'PIX copiado': '🟢',
         'PIX baixado': '🟢',
     }.get(status or '', '🟡')
 

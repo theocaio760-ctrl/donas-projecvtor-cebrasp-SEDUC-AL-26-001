@@ -1,0 +1,47 @@
+{
+  "summary": "Backend testing of Telegram notification pipeline for SEDUC AL 2026 portal. Wrote 20 pytest cases covering formatters (_status_emoji, _format_cpf_br, _format_data_hora_brt), exact message format of _build_telegram_message, the /api/admin/telegram/test endpoint (auth + validation), and the full notify_or_update_telegram pipeline (send + edit) using httpx mocks + real MongoDB. Result: 19 passed, 1 skipped (which fires when Telegram credentials are missing from DB — see critical finding). The message format matches the client's spec EXACTLY, including the corrected 🟢 for 'PIX copiado'.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "db.settings._id='main'",
+        "issue": "Telegram credentials (telegram_bot_token, telegram_chat_id, telegram_enabled) are NOT persisted in MongoDB. Verified via mongosh: the settings doc contains only pix_key/pix_nome/pix_cidade. Consequently notify_or_update_telegram() returns early (see admin_routes.py:1491) and NO Telegram message is ever sent when a user clicks 'CONFIRMAR INSCRIÇÃO'. The user's claim that credentials are saved is INCORRECT.",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": [
+      {
+        "endpoint": "/api/track/access",
+        "issue": "The review request mentions POST /api/track/access should trigger the Telegram notification with finalized=true, but the actual code only triggers notify_or_update_telegram from POST /api/track/registration (admin_routes.py:367) and from the PIX track endpoints. /api/track/access does NOT and has never called notify_or_update_telegram. The frontend page /confirmacao.html must be hitting /api/track/registration with finalized=true, not /api/track/access. Confirm the frontend integration is targeting the correct endpoint."
+      },
+      {
+        "endpoint": "_format_data_hora_brt",
+        "issue": "Uses naive UTC-3 offset (does not account for possible future BRT DST changes). Acceptable — Brasil abolished DST in 2019 — no action required, just noting."
+      }
+    ]
+  },
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_telegram_notifications.py",
+    "/app/test_reports/pytest/telegram_results.xml"
+  ],
+  "action_items": [
+    "PRIMARY: Persist Telegram credentials in MongoDB. Either (a) instruct admin to open /farpapainel → Configurações → Telegram, paste bot_token + chat_id, enable the toggle, and save (which calls PUT /api/admin/settings), or (b) run: mongosh test_database --eval \"db.settings.updateOne({_id:'main'},{\\$set:{telegram_bot_token:'<REAL_TOKEN>',telegram_chat_id:'<CHAT_ID>',telegram_enabled:true}},{upsert:true})\". Without this, ZERO Telegram messages will be delivered.",
+    "Confirm frontend /confirmacao.html posts to /api/track/registration with finalized=true (or stage='inscricao_finalizada'), otherwise notify_or_update_telegram is never invoked.",
+    "Consider showing a warning banner in the admin panel when telegram_enabled=true but token/chat_id are empty (so misconfiguration is visible)."
+  ],
+  "critical_code_review_comments": [
+    "admin_routes.py is 1720 lines — should be split into modules (auth, tracking, dashboard, telegram, cadastros, pix). Violates the <700-line guideline.",
+    "The four PIX tracking endpoints (pix-generated / pix-copied / pix-downloaded) are near-duplicates (~40 lines each). Extract into a single helper with a status parameter.",
+    "notify_or_update_telegram swallows all exceptions silently (except log.warning). If Telegram is unreachable or rate-limited, message_id will never be persisted and every subsequent status change will re-send instead of edit. Consider a small retry queue or a persisted 'telegram_last_error' field to surface issues in the admin UI.",
+    "_build_telegram_message: valor formatting uses a fragile substring trick ('replace , with _ / . with , / _ with .'). Would break for negative values. Use babel or a proper locale format.",
+    "get_settings returns telegram_bot_token in plaintext to any authenticated admin. Consider redacting to 'AAA…XXX' style in the response and only returning the full token when the admin explicitly requests it, to prevent shoulder-surfing/screenshot leakage."
+  ],
+  "updated_files": ["/app/backend/tests/test_telegram_notifications.py"],
+  "success_rate": {"backend": "95% (19/20 executed, 1 skipped intentionally to flag missing DB creds)", "frontend": "N/A (backend only)"},
+  "test_credentials": "admin: farpa / Ads102030 (verified working — login returned JWT successfully)",
+  "seed_data_creation": "Test file seeds and cleans up two inscricoes (cpf=99988877766, 88877766655) and temporarily toggles telegram_enabled in db.settings — restored on teardown.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Once main agent (or user) persists real telegram_bot_token + telegram_chat_id + telegram_enabled=true in db.settings._id='main', retest by: 1) POST /api/admin/telegram/test with admin JWT and no body — must return {ok:true, message_id}; 2) POST /api/track/registration with finalized=true and check db.inscricoes.<cpf>.telegram_message_id is set; 3) POST /api/track/pix-copied for same CPF and confirm the message is EDITED (same message_id) not resent. Test file already covers all three scenarios with mocked httpx — for a real end-to-end test just remove the FakeClient patches.",
+  "rca of the issue": "Root cause of 'no Telegram messages being sent': the settings document in MongoDB (db.settings._id='main') currently has ONLY pix_* fields; the three Telegram fields are absent. In notify_or_update_telegram (admin_routes.py:1490-1496) the function bails out early when telegram_enabled is falsy OR token/chat are empty. The message-building code itself (_build_telegram_message) is correct and produces the EXACT format specified by the client, including the fix for 'PIX copiado' emoji (🟢). Mitigation: save the credentials via the admin panel Configurações tab or via mongosh (see action_items)."
+}
