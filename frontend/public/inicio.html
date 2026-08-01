@@ -81,11 +81,32 @@
   h4, h5 { font-size: 13px !important; }
   p, li, td, th { font-size: 13px !important; }
 
-  /* Menu mobile / topbar Cebraspe compacto */
-  #cebraspe-topbar { padding-bottom: 8px !important; }
-  #cebraspe-topbar .ceb-container { padding: 8px 10px !important; }
-  #cebraspe-topbar .ceb-logo { font-size: 16px !important; }
-  #cebraspe-topbar .ceb-logo svg { width: 22px !important; height: 20px !important; }
+  /* Topbar Cebraspe mais destacado no mobile — logo maior para dar identidade */
+  body #cebraspe-topbar { padding-bottom: 12px !important; padding-top: 8px !important; }
+  body #cebraspe-topbar .ceb-container { padding: 14px 16px !important; gap: 12px !important; }
+  body #cebraspe-topbar .ceb-logo { font-size: 24px !important; font-weight: 700 !important; gap: 12px !important; }
+  body #cebraspe-topbar .ceb-logo svg { width: 40px !important; height: 36px !important; }
+
+  /* === Botões CONTINUAR / VOLTAR: reduzir tamanho no mobile === */
+  /* Sobrescreve o __fgv_touch_targets com maior especificidade */
+  body a#bt-continuar,
+  body a[data-testid="btn-voltar-termos"],
+  html body a#bt-continuar,
+  html body a[data-testid="btn-voltar-termos"] {
+    min-height: 36px !important;
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+    border-radius: 6px !important;
+  }
+  /* Botões genéricos em .btn/.button-action nas páginas de fluxo */
+  body #pgInformacoes .botao,
+  body #pgInformacoes button,
+  body #pgInformacoes a.botao,
+  body .btn, body button.btn, body a.btn {
+    min-height: 36px !important;
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+  }
 
   /* Print-only header some no mobile de tela */
   #print-header { display: none !important; }
