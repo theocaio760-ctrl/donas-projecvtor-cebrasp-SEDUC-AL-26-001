@@ -389,6 +389,15 @@ body.__cebraspe-applied [class*="vp-pop-up"] {
   #print-header { display: none !important; }
 }
 </style>
+<style id="__no_dupe_title_v1">
+/* Após remover h2.tituloPagina duplicado, reduz o gap entre header e card */
+#pgInformacoes { padding-top: 8px !important; }
+@media (max-width: 768px) {
+  body .Miolo, html body .Miolo { padding-top: 4px !important; margin-top: 4px !important; }
+  #pgInformacoes { padding: 8px 12px !important; }
+  #TopoInformacoes { margin-top: 0 !important; padding-top: 0 !important; }
+}
+</style>
 </head>
 <body class="concurso128 __cebraspe-applied"><div data-cebraspe-marker="__cebraspe_layout_v1" id="__cebraspe_topbar_root"><header id="cebraspe-topbar">
 <div class="ceb-container">
@@ -557,7 +566,7 @@ h2.tituloPagina span { border-bottom:0 !important; text-indent:0 !important; pad
 </div>
 <div class="bgConcurso"></div>
 <div class="Miolo">
-<h2 class="tituloPagina"><span>Inscrição Realizada</span></h2>
+<!-- h2.tituloPagina removido: título duplicado com "Inscrição realizada" do card abaixo -->
 <div id="pgInformacoes">
 <style>
 /* --- Modern IGEDUC-style form skin --- */
