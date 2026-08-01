@@ -288,7 +288,72 @@ body.__cebraspe-applied [class*="vp-pop-up"] {
   border-top: 1px solid #2a4270; padding: 16px 24px; text-align: center;
   font-size: 11px; letter-spacing: 1px; color: #93a1bb;
 }
-</style></head>
+</style><style id="__mobile_compact_v1">
+/* Mobile compact overrides - aplicado em Android/iOS */
+@media (max-width: 768px) {
+  /* Remove botao "Pagina de Acompanhamento" no header */
+  .header__action-follow-button,
+  #cebraspe-topbar .ceb-acomp,
+  a[href*="acompanhamento/default1"],
+  .btn-areacandidato { display: none !important; }
+
+  /* Cabeçalhos e logos menores */
+  #Topo, #Topo * { max-height: 90px !important; }
+  #Logo, #Logo h1, #Logo h1 img { max-width: 140px !important; max-height: 60px !important; }
+  #Rodape, #Rodape * { font-size: 11px !important; }
+
+  /* Titulo da pagina */
+  h2.tituloPagina { line-height: 50px !important; font-size: 22px !important; letter-spacing: 0 !important; }
+  h2.tituloPagina span { text-indent: 10px !important; padding: 4px 0 !important; }
+
+  /* Miolo/container menor e sem sombra pesada */
+  .Miolo { width: 100% !important; left: auto !important; margin: 0 auto 16px !important; padding-bottom: 20px !important; min-height: auto !important; border-radius: 0 !important; box-shadow: none !important; }
+  .Conteudo, .container_inner { width: 100% !important; padding: 0 12px !important; box-sizing: border-box !important; }
+
+  /* Ícones grandes / cards menores */
+  #TopoInformacoes .imagem { width: 60px !important; height: 60px !important; }
+  #TopoInformacoes .dados h2 { font-size: 18px !important; }
+  #TopoInformacoes .dados p { font-size: 13px !important; }
+
+  /* Botoes mais compactos */
+  .botao, button.botao, a.botao { padding: 6px 12px !important; font-size: 12px !important; }
+  .botao.maior.verde span { padding: 8px 12px !important; font-size: 15px !important; }
+
+  /* Blocos padrao (VAGAS/REMUNERAÇÃO/PERÍODO) empilhados e compactos */
+  .blocoPadrao { margin-bottom: 20px !important; }
+  .blocoPadrao h3 span { padding: 4px 12px !important; font-size: 13px !important; }
+  .blocoPadrao p { font-size: 13px !important; line-height: 1.35 !important; }
+  .blocoPadrao .dados { padding: 8px 14px 16px !important; }
+
+  /* Tabelas responsivas */
+  #blocoListaVagas table { width: 100% !important; float: none !important; }
+  #blocoListaVagas th, #blocoListaVagas td { font-size: 12px !important; padding: 4px !important; }
+
+  /* Formularios: inputs full-width com font-size 16px (evita zoom iOS) */
+  input:not([type=checkbox]):not([type=radio]):not([type=submit]):not([type=button]),
+  select, textarea {
+    width: 100% !important; box-sizing: border-box !important; font-size: 16px !important;
+    padding: 8px !important;
+  }
+
+  /* Espaçamento vertical entre seções reduzido */
+  body { font-size: 14px !important; }
+  h1 { font-size: 22px !important; }
+  h2 { font-size: 18px !important; }
+  h3 { font-size: 15px !important; }
+  h4, h5 { font-size: 13px !important; }
+  p, li, td, th { font-size: 13px !important; }
+
+  /* Menu mobile / topbar Cebraspe compacto */
+  #cebraspe-topbar .ceb-container { padding: 8px 10px !important; }
+  #cebraspe-topbar .ceb-logo { font-size: 16px !important; }
+  #cebraspe-topbar .ceb-logo svg { width: 22px !important; height: 20px !important; }
+
+  /* Print-only header some no mobile de tela */
+  #print-header { display: none !important; }
+}
+</style>
+</head>
 <body class="concurso128 __cebraspe-applied"><div data-cebraspe-marker="__cebraspe_layout_v1" id="__cebraspe_topbar_root"><header id="cebraspe-topbar">
 <div class="ceb-container">
 <a class="ceb-logo" href="/inicio.html">

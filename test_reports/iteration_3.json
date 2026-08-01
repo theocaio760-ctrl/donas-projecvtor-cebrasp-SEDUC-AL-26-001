@@ -1,0 +1,21 @@
+{
+  "summary": "Testado layout mobile compacto e ocultação do botão 'PÁGINA DE ACOMPANHAMENTO' nas 7 páginas públicas do fluxo Cebraspe/SEDUC-AL 2026. Todas as 7 páginas possuem o marcador <style id='__mobile_compact_v1'>. Em viewport mobile 390x844 todos os seletores de acompanhamento (.header__action-follow-button, #cebraspe-topbar .ceb-acomp, a[href*='acompanhamento/default1']) retornam display:none ou NOT_FOUND. Em desktop 1440x900, os elementos existentes voltam a exibir (inline-block/flex) — sem regressão. body font-size = 14px em mobile em todas as páginas. inputs de texto (verificados em termos.html) com width 100% e font-size 16px conforme regra anti-zoom iOS.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "CSS mobile compact aplicado via <style> inline em cada arquivo — funciona, mas para manutenção futura seria melhor extrair para um único /app/frontend/public/mobile-compact.css referenciado via <link> em todas as páginas (DRY).",
+    "Em dados-inscricao.html/inscricao.html o primeiro input capturado tem width pequeno (18-244px) — esperado pois são radios/checkbox/campos curtos; a regra CSS anti-zoom no bloco compact_v1 aplica-se corretamente a inputs de texto/email/tel (validado em termos.html: 16px/100%)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100%"},
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Snapshots por página (mobile 390x844): inicio=none, termos=none, inscricao=none, dados-inscricao=none, confirmacao=none, pagamento-pix=none, inscricao-realizada=none. Desktop 1440x900: inline-block/flex em todas — sem regressão. Marker __mobile_compact_v1 presente em todas as 7 páginas."
+}
