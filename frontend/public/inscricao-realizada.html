@@ -298,9 +298,13 @@ body.__cebraspe-applied [class*="vp-pop-up"] {
   #Logo, #Logo h1, #Logo h1 img { max-width: 140px !important; max-height: 60px !important; }
   #Rodape, #Rodape * { font-size: 11px !important; }
 
-  /* Titulo tradicional das paginas /Miolo */
-  h2.tituloPagina { line-height: 50px !important; font-size: 22px !important; letter-spacing: 0 !important; margin-top: 40px !important; }
+  /* Titulo tradicional das paginas /Miolo — especificidade alta para vencer regras posteriores com !important */
+  body h2.tituloPagina,
+  html body h2.tituloPagina { line-height: 50px !important; font-size: 22px !important; letter-spacing: 0 !important; margin-top: 40px !important; padding-top: 12px !important; }
   h2.tituloPagina span { text-indent: 10px !important; padding: 4px 0 !important; }
+  /* .Miolo padding-top para dar respiro entre header e título nas páginas do fluxo */
+  body .Miolo,
+  html body .Miolo { padding-top: 40px !important; }
 
   /* Espaço extra entre topo/logo e o primeiro bloco (título/subtítulo) */
   #TopoInformacoes { margin-top: 40px !important; padding-top: 16px !important; }

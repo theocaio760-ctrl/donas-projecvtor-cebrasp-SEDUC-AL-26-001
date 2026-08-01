@@ -1,0 +1,30 @@
+{
+  "summary": "Retest do fix de espaçamento vertical mobile em 7 páginas. Fix com maior especificidade CSS (body h2.tituloPagina, html body h2.tituloPagina + body .Miolo) funcionou. Todas as 7 páginas passam critério top>=100px em mobile 390x844. Regressão desktop 1440x900 em inicio OK (.vc_row.grid_section padding-top=87px preservado).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "measurements_mobile_390x844": {
+    "inicio": {"selector": "h2 (Secretaria de Estado...)", "top": 148, "marginTop": "40px", "paddingTop": "12px", "status": "PASS"},
+    "termos": {"selector": "h1", "top": 114, "marginTop": "0px", "paddingTop": "0px", "status": "PASS"},
+    "inscricao": {"selector": "h2.tituloPagina", "top": 155, "marginTop": "40px", "paddingTop": "12px", "miolo_paddingTop": "40px", "status": "PASS"},
+    "dados-inscricao": {"selector": "h2.tituloPagina", "top": 155, "marginTop": "40px", "paddingTop": "12px", "miolo_paddingTop": "40px", "status": "PASS"},
+    "confirmacao": {"selector": "h2.tituloPagina", "top": 155, "marginTop": "40px", "paddingTop": "12px", "miolo_paddingTop": "40px", "status": "PASS"},
+    "pagamento-pix": {"selector": "h2.tituloPagina", "top": 155, "marginTop": "40px", "paddingTop": "12px", "miolo_paddingTop": "40px", "status": "PASS"},
+    "inscricao-realizada": {"selector": "h2.tituloPagina", "top": 155, "marginTop": "40px", "paddingTop": "12px", "miolo_paddingTop": "40px", "status": "PASS"}
+  },
+  "measurements_desktop_1440x900": {
+    "inicio": {".vc_row.grid_section paddingTop": "87px (original preservado)", "status": "PASS - sem regressão"}
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100% (7/7 páginas mobile + desktop regression OK)"},
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Fix de especificidade CSS (body/html body prefix) resolveu completamente. As 5 páginas do fluxo (inscricao, dados-inscricao, confirmacao, pagamento-pix, inscricao-realizada) agora todas medem top=155px (antes 75px). termos.html=114px, inicio.html=148px. Desktop inicio.html sem regressão."
+}
