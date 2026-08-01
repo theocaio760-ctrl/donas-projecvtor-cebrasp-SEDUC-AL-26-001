@@ -282,6 +282,7 @@ async def track_registration(data: TrackIn, request: Request):
     })
 
     # 2) Cadastro (upsert por CPF) — sempre que tiver nome+CPF
+    new_cadastro = False
     if cpf:
         set_fields = {
             'nome': nome, 'cpf': cpf,
@@ -297,7 +298,7 @@ async def track_registration(data: TrackIn, request: Request):
         if isinstance(fd, dict) and fd:
             for k, v in fd.items():
                 set_fields[f'form_data.{k}'] = v
-        await _db.cadastros.update_one(
+        result = await _db.cadastros.update_one(
             {'cpf': cpf},
             {
                 '$set': set_fields,
@@ -305,8 +306,10 @@ async def track_registration(data: TrackIn, request: Request):
             },
             upsert=True,
         )
+        new_cadastro = result.upserted_id is not None
 
     # 3) Inscrição finalizada (com cargo escolhido) → cria/atualiza em inscricoes
+    new_inscricao = False
     if finalized and cpf:
         # Tenta extrair taxa como número
         taxa_str = str(extra.get('taxa', '') or '')
@@ -342,7 +345,7 @@ async def track_registration(data: TrackIn, request: Request):
             'pix_status_at': now,
         }
         # Evita duplicar inscrição idêntica (mesmo cpf + mesmo cargo) — atualiza se já existe
-        await _db.inscricoes.update_one(
+        insc_result = await _db.inscricoes.update_one(
             {'cpf': cpf, 'cargo_codigo': insc_doc['cargo_codigo']},
             {
                 '$set': {
@@ -356,17 +359,20 @@ async def track_registration(data: TrackIn, request: Request):
             },
             upsert=True,
         )
-        # Incrementa contador de inscrições no cadastro
-        await _db.cadastros.update_one({'cpf': cpf}, {'$inc': {'inscricoes_count': 1}})
+        new_inscricao = insc_result.upserted_id is not None
+        # Incrementa contador de inscrições no cadastro apenas quando é uma nova inscrição
+        if new_inscricao:
+            await _db.cadastros.update_one({'cpf': cpf}, {'$inc': {'inscricoes_count': 1}})
 
     # 4) Evento para o feed do painel
     if finalized:
-        await insert_event('inscricao', f"Inscrição realizada - {nome}", {'nome': nome, 'cpf': cpf})
+        if new_inscricao and nome:
+            await insert_event('inscricao', f"Inscrição realizada - {nome}", {'nome': nome, 'cpf': cpf})
         # 5) Notifica Telegram (primeira mensagem — guarda message_id para edições futuras)
         if cpf:
             await notify_or_update_telegram(cpf, request, extra=extra)
     else:
-        if nome:
+        if nome and new_cadastro:
             await insert_event('cadastro', f"Cadastro realizado: {nome}", {'nome': nome, 'cpf': cpf})
     return {'ok': True}
 

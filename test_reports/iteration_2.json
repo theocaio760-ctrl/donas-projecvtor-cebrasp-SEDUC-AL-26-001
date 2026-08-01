@@ -1,0 +1,27 @@
+{
+  "summary": "Backend regression tests for the event-dedupe fix on /api/track/registration. Wrote 5 pytest cases hitting the real backend (via REACT_APP_BACKEND_URL) with real MongoDB persistence. All 5 tests pass. The fix correctly dedupes 'cadastro' and 'inscricao' events using result.upserted_id, and preserves form_data via dot notation.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_dedupe_events.py",
+    "/app/test_reports/pytest/dedupe_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "admin_routes.py is now >1720 lines. Continues to violate the <700 LOC guideline. Split into tracking/dedupe/telegram/pix modules.",
+    "The dedupe key for 'cadastro' event is now 'first insert of the CPF' — meaning if the user's cadastro is deleted and they re-enter, a new event fires (expected behavior). Confirm this matches the product intent.",
+    "notify_or_update_telegram is called for EVERY finalized POST (even when new_inscricao is False). That's correct (edits existing message) but if the mensagem was never sent originally (Telegram unreachable), each retry will send a NEW message, and only after the first success will edits kick in. Consider caching 'telegram_send_failed' to backoff.",
+    "The registrations collection is still an append-only log (no dedupe there). That is intentional per code, but note db.registrations grows unbounded — add TTL or periodic cleanup."
+  ],
+  "updated_files": ["/app/backend/tests/test_dedupe_events.py"],
+  "success_rate": {"backend": "100% (5/5)", "frontend": "N/A"},
+  "test_credentials": "farpa / Ads102030 (validated via /api/admin/auth/login)",
+  "seed_data_creation": "Uses test CPFs 11122233344, 22233344455, 33344455566. All cleaned in autouse fixture before each test and at module teardown.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Dedupe fix VERIFIED. Cadastro fires exactly 1 event per CPF (first upsert only). Inscricao fires exactly 1 event per (CPF, cargo_codigo) pair, with inscricoes_count incrementing only on new upserts. Two different cargos for same CPF -> 2 events (correct). Regression flow (registrations append log, cadastros upsert, inscricoes upsert, Telegram notify call) all still working. Iteration_1's OPEN issue (Telegram creds not in DB) remains outside this iteration's scope.",
+  "rca of the issue": "Original bug: /inscricao.html and /dados-inscricao.html both POST /api/track/registration with stage=cadastro, and each call unconditionally called insert_event('cadastro'), producing duplicates in the admin feed. Fix in admin_routes.py:309, 362, 369, 375: use `result.upserted_id is not None` to detect whether the upsert was a true insert vs. update, and only emit the feed event on true inserts. Same technique applied to inscricao event and inscricoes_count increment. Verified with 5 tests covering: 5x cadastro→1 event, 2x finalized→1 event & count=1, 2 different cargos→2 events, admin realtime feed cleanliness, and regression of the normal flow."
+}
